@@ -9,18 +9,18 @@ const createUser = async (req, res) => {
     const isCheckEmail = reg.test(email);
     console.log("ischeckemail", isCheckEmail);
     if (!fullname || !username || !email || !password || !confirmPassword) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: "ERR",
         message: "The input is required",
       });
     } else if (!isCheckEmail) {
       // xử lý status code để isSucces và isError không hiểu nhầm nữa
-      return res.status(400).json({
+      return res.status(200).json({
         status: "ERR",
         message: "The input is email",
       });
     } else if (password !== confirmPassword) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: "ERR",
         message: "The password is equal confirmPassword",
       });
@@ -43,7 +43,7 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: "ERR",
         message: "The input is required",
       });
@@ -74,7 +74,7 @@ const updateUser = async (req, res) => {
     const userId = req.params.id;
     const data = req.body;
     if (!userId) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: "ERR",
         message: "The userId is required",
       });
