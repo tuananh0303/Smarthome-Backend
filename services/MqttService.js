@@ -3,7 +3,7 @@ const Sensor = require("../models/SensorModel");
 const Device = require("../models/DeviceModel");
 
 let mqttClient = null;
-const subscribedTopics = [];
+// const subscribedTopics = [];
 
 const connectMqtt = () => {
   mqttClient = mqtt.connect("mqtt://io.adafruit.com", {
@@ -25,18 +25,18 @@ const subscribeToTopic = (topic) => {
   if (!mqttClient) {
     connectMqtt();
   }
-  if (!subscribedTopics.includes(topic)) {
-    mqttClient.subscribe(topic, (err) => {
-      if (err) {
-        console.error("Error subscribing to topic:", err);
-      } else {
-        console.log("Subscribed to topic:", topic);
-        subscribedTopics.push(topic);
-      }
-    });
-  } else {
-    console.log("Already subscribed to topic:", topic);
-  }
+  // if (!subscribedTopics.includes(topic)) {
+  mqttClient.subscribe(topic, (err) => {
+    if (err) {
+      console.error("Error subscribing to topic:", err);
+    } else {
+      console.log("Subscribed to topic:", topic);
+      subscribedTopics.push(topic);
+    }
+  });
+  // } else {
+  //   console.log("Already subscribed to topic:", topic);
+  // }
 };
 
 const publishToTopic = (topic, data) => {
