@@ -62,7 +62,7 @@ const handleMessageSensor = async (topic, message) => {
       humidity: parseFloat(datasensor[1]),
       light: parseFloat(datasensor[2]),
     };
-    console.log("newData:", newData);
+    // console.log("newData:", newData);
     try {
       const compareDataold = await getDataFromSensorModel();
       if (

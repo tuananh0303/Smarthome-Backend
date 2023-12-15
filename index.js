@@ -103,13 +103,13 @@ mongoose
             console.log("lastDeviceData new:", updatedDeviceData);
             if (doorChanged) {
               mqttService.publishToTopic(topic3, updatedDeviceData.door);
-              console.log("published control-door");
+              // console.log("published control-door");
             } else if (fanChanged) {
               mqttService.publishToTopic(topic4, updatedDeviceData.fan);
-              console.log("published control-fan");
+              // console.log("published control-fan");
             } else if (lampChanged) {
               mqttService.publishToTopic(topic5, updatedDeviceData.lamp);
-              console.log("published control-lamp");
+              // console.log("published control-lamp");
             }
           } catch (e) {
             console.error("Error updating device data:", e);
