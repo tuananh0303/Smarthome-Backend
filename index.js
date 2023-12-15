@@ -22,7 +22,10 @@ const URI = process.env.mongo_URL;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://snazzy-praline-20341a.netlify.app",
+    ],
     methods: ["GET", "POST"],
     credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
     allowedHeaders: ["Content-Type", "Authorization"],
