@@ -61,7 +61,7 @@ const handleMessageSensor = (topic, message) => {
   const data = JSON.parse(message.toString());
   let fieldToUpdate;
   switch (topic) {
-    case "khoitruong9802/feeds/get-temp":
+    case "khoitruong9802/feeds/get-temp-humi-light":
       fieldToUpdate = "temperature";
       break;
     case "khoitruong9802/feeds/get-light":

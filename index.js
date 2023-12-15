@@ -37,7 +37,7 @@ app.use(cookieParser());
 routes(app);
 const topic = "khoitruong9802/feeds/get-humi";
 const topic1 = "khoitruong9802/feeds/get-light";
-const topic2 = "khoitruong9802/feeds/get-temp";
+const topic2 = "khoitruong9802/feeds/get-temp-humi-light";
 const topic3 = "khoitruong9802/feeds/control-door";
 const topic4 = "khoitruong9802/feeds/control-fan";
 const topic5 = "khoitruong9802/feeds/control-lamp";
