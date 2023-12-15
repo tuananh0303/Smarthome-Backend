@@ -14,26 +14,21 @@ const Device = require("./models/DeviceModel");
 dotenv.config();
 
 const app = express();
-
-const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "https://smarthome-anhhungminhnghiakhoi.netlify.app",
-    // Các origins khác mà bạn muốn cho phép truy cập
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"], // Thêm các methods bạn muốn cho phép
-  credentials: true, // Nếu bạn sử dụng cookies hoặc authentication headers
-  allowedHeaders: ["Content-Type", "Authorization"],
-  exposedHeaders: ["Content-Disposition"],
-};
-
-app.use(cors(corsOptions));
-// app.use(cors());
 const server = http.createServer(app);
 const io = socketIO(server);
 
 const PORT = process.env.PORT || 8080;
 const URI = process.env.mongo_URL;
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Disposition"],
+  })
+);
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
