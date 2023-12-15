@@ -44,6 +44,5 @@ const authUserMiddleWare = (req, res, next) => {
 };
 
 module.exports = {
-  // authMiddleWare,
   authUserMiddleWare,
 };

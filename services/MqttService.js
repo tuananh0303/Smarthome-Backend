@@ -16,8 +16,6 @@ const connectMqtt = () => {
     console.log("Connected to MQTT broker");
   });
   mqttClient.on("message", (topic, message) => {
-    // console.log(`Received message on topic ${topic}: ${message.toString()}`);
-    // Xử lý tin nhắn nhận được
     handleMessageSensor(topic, message);
     handleMessageDevice(topic, message);
   });
@@ -54,46 +52,53 @@ const publishToTopic = (topic, data) => {
     }
   });
 };
-// Các hàm khác như publish, unsubscribe có thể được thêm vào đây
-const handleMessageSensor = (topic, message) => {
-  console.log(`Received message on topic ${topic}: ${message.toString()}`);
-  // Xử lý tin nhắn nhận được và cập nhật dữ liệu
-  const data = JSON.parse(message.toString());
-  let fieldToUpdate;
-  switch (topic) {
-    case "khoitruong9802/feeds/get-temp-humi-light":
-      fieldToUpdate = "temperature";
-      break;
-    case "khoitruong9802/feeds/get-light":
-      fieldToUpdate = "light";
-      break;
-    case "khoitruong9802/feeds/get-humi":
-      fieldToUpdate = "humidity";
-      break;
-    default:
-      console.log("Unknown topic:", topic);
-      return;
-  }
-  Sensor.findOneAndUpdate(
-    {},
-    { $set: { [fieldToUpdate]: data } },
-    { upsert: true, new: true },
-    (err, result) => {
-      if (err) {
-        console.error("Error updating data in SensorModel:", err);
+
+const handleMessageSensor = async (topic, message) => {
+  if (topic === "khoitruong9802/feeds/get-temp-humi-light") {
+    const data = message.toString();
+    const datasensor = data.split("-");
+    const newData = {
+      temperature: parseFloat(datasensor[0]), // Chuyển đổi sang số nếu cần thiết
+      humidity: parseFloat(datasensor[1]),
+      light: parseFloat(datasensor[2]),
+    };
+    console.log("newData:", newData);
+    try {
+      const compareDataold = await getDataFromSensorModel();
+      if (
+        compareDataold.temperature !== newData.temperature ||
+        compareDataold.humidity !== newData.humidity ||
+        compareDataold.light !== newData.light
+      ) {
+        Sensor.create(newData, (err, result) => {
+          if (err) {
+            console.error("Error creating new Sensor data:", err);
+          } else {
+            console.log("New Sensor data created:", result);
+          }
+        });
       } else {
-        console.log("Data updated in SensorModel:", result);
-        // Cập nhật giao diện người dùng hoặc thực hiện các tác vụ khác ở đây nếu cần
+        console.log("error data is duplicated");
       }
+    } catch (error) {
+      console.error("Error comparing sensor data:", error);
     }
-  );
-  // Hoặc gửi dữ liệu tới giao diện người dùng
+  }
+};
+
+const getDataFromSensorModel = async () => {
+  try {
+    const sensorData = await Sensor.findOne().sort({ _id: -1 }).limit(1); // Lấy dữ liệu mới nhất
+    return sensorData; // Trả về dữ liệu cảm biến từ cơ sở dữ liệu
+  } catch (error) {
+    console.error("Error getting sensor data:", error);
+    return null;
+  }
 };
 
 const handleMessageDevice = (topic, message) => {
-  console.log(`Received message on topic ${topic}: ${message.toString()}`);
-  // Xử lý tin nhắn nhận được và cập nhật dữ liệu
-  const data = JSON.parse(message.toString());
+  const data = message.toString();
+  const deviceData = parseInt(data);
   let fieldToUpdate;
   switch (topic) {
     case "khoitruong9802/feeds/control-door":
@@ -111,18 +116,16 @@ const handleMessageDevice = (topic, message) => {
   }
   Device.findOneAndUpdate(
     {},
-    { $set: { [fieldToUpdate]: data } },
+    { $set: { [fieldToUpdate]: deviceData } },
     { upsert: true, new: true },
     (err, result) => {
       if (err) {
         console.error("Error updating data in DeviceModel:", err);
       } else {
         console.log("Data updated in DeviceModel:", result);
-        // Cập nhật giao diện người dùng hoặc thực hiện các tác vụ khác ở đây nếu cần
       }
     }
   );
-  // Hoặc gửi dữ liệu tới giao diện người dùng
 };
 
 module.exports = {

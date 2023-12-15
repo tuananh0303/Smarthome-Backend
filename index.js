@@ -29,15 +29,15 @@ app.use(
     exposedHeaders: ["Content-Disposition"],
   })
 );
-app.use(express.json({ limit: "150mb" }));
-app.use(express.urlencoded({ limit: "150mb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 routes(app);
-const topic = "khoitruong9802/feeds/get-humi";
-const topic1 = "khoitruong9802/feeds/get-light";
-const topic2 = "khoitruong9802/feeds/get-temp-humi-light";
+// const topic = "khoitruong9802/feeds/get-humi";
+// const topic1 = "khoitruong9802/feeds/get-light";
+const topic = "khoitruong9802/feeds/get-temp-humi-light";
 const topic3 = "khoitruong9802/feeds/control-door";
 const topic4 = "khoitruong9802/feeds/control-fan";
 const topic5 = "khoitruong9802/feeds/control-lamp";
@@ -52,8 +52,8 @@ mongoose
       console.log(`Server is running on port ${PORT}`);
       mqttService.connectMqtt();
       mqttService.subscribeToTopic(topic);
-      mqttService.subscribeToTopic(topic1);
-      mqttService.subscribeToTopic(topic2);
+      // mqttService.subscribeToTopic(topic1);
+      // mqttService.subscribeToTopic(topic2);
       mqttService.subscribeToTopic(topic3);
       mqttService.subscribeToTopic(topic4);
       mqttService.subscribeToTopic(topic5);
@@ -70,36 +70,6 @@ mongoose
         };
         socket.emit("sensorData", formatData);
 
-        // error update data trong setInterval. bởi vì nó sẽ cứ data lần đầu tiên thôi do gọi datasensorUpdate bên ngoài nên nó thực hiện
-        // việc gọi dữ liệu từ getDataFromSensorModel lần đầu luôn
-
-        // tạo hàm xử lý khi có sự thay đổi dữ liệu của sensorData
-
-        // Hàm để gửi dữ liệu sensorData mới khi có sự thay đổi
-        const sendUpdatedSensorData = async () => {
-          const latestSensorData = await getDataFromSensorModel();
-          if (latestSensorData) {
-            const sensorData = {
-              temperature: latestSensorData.temperature,
-              humidity: latestSensorData.humidity,
-              light: latestSensorData.light,
-            };
-            console.log(
-              "updateData duoc gui di vao nhung lan sau:",
-              sensorData
-            );
-            socket.emit("sensorData", sensorData);
-          }
-        };
-        // Hàm để theo dõi sự thay đổi trong sensorData
-        const watchSensorDataChanges = async () => {
-          setInterval(async () => {
-            await sendUpdatedSensorData();
-          }, 30500); // Thời gian để kiểm tra sự thay đổi
-        };
-        // Gọi hàm để bắt đầu theo dõi sự thay đổi trong sensorData
-        watchSensorDataChanges();
-
         // gọi dữ liệu đầu tiên của datadevice
         const datadevice = await getDataFromDeviceModel();
         const deviceData = {
@@ -108,34 +78,6 @@ mongoose
           lamp: datadevice.lamp,
         };
         socket.emit("deviceData", deviceData);
-
-        // hàm xử lý khi có sự thay đổi dữ liệu của deviceData
-        // Hàm để gửi dữ liệu deviceData mới khi có sự thay đổi
-        const sendUpdatedDeviceData = async () => {
-          const latestDeviceData = await getDataFromDeviceModel();
-          if (latestDeviceData) {
-            const deviceData = {
-              door: latestDeviceData.door,
-              fan: latestDeviceData.fan,
-              lamp: latestDeviceData.lamp,
-            };
-            socket.emit("deviceData", deviceData);
-          }
-        };
-        // Hàm để theo dõi sự thay đổi trong deviceData
-        const watchDeviceDataChanges = async () => {
-          let previousDeviceData = await getDataFromDeviceModel();
-
-          setInterval(async () => {
-            const latestDeviceData = await getDataFromDeviceModel();
-            if (!isEqual(previousDeviceData, latestDeviceData)) {
-              await sendUpdatedDeviceData();
-              previousDeviceData = latestDeviceData;
-            }
-          }, 500); // Thời gian để kiểm tra sự thay đổi
-        };
-        // Gọi hàm để bắt đầu theo dõi sự thay đổi trong deviceData
-        watchDeviceDataChanges();
 
         socket.on("controlData", async (data) => {
           const lastDeviceData = await Device.findOne()
@@ -177,6 +119,54 @@ mongoose
             console.error("Error updating device data:", e);
           }
         });
+        // Hàm để gửi dữ liệu sensorData mới khi có sự thay đổi
+        const sendUpdatedSensorData = async () => {
+          const latestSensorData = await getDataFromSensorModel();
+          if (latestSensorData) {
+            const sensorData = {
+              temperature: latestSensorData.temperature,
+              humidity: latestSensorData.humidity,
+              light: latestSensorData.light,
+            };
+            socket.emit("sensorData", sensorData);
+          }
+        };
+        // Hàm để theo dõi sự thay đổi trong sensorData
+        const watchSensorDataChanges = async () => {
+          setInterval(async () => {
+            await sendUpdatedSensorData();
+          }, 30500); // Thời gian để kiểm tra sự thay đổi
+        };
+        // Gọi hàm để bắt đầu theo dõi sự thay đổi trong sensorData
+        watchSensorDataChanges();
+
+        // hàm xử lý khi có sự thay đổi dữ liệu của deviceData
+        // Hàm để gửi dữ liệu deviceData mới khi có sự thay đổi
+        const sendUpdatedDeviceData = async () => {
+          const latestDeviceData = await getDataFromDeviceModel();
+          if (latestDeviceData) {
+            const deviceData = {
+              door: latestDeviceData.door,
+              fan: latestDeviceData.fan,
+              lamp: latestDeviceData.lamp,
+            };
+            socket.emit("deviceData", deviceData);
+          }
+        };
+        // Hàm để theo dõi sự thay đổi trong deviceData
+        const watchDeviceDataChanges = async () => {
+          let previousDeviceData = await getDataFromDeviceModel();
+
+          setInterval(async () => {
+            const latestDeviceData = await getDataFromDeviceModel();
+            if (!isEqual(previousDeviceData, latestDeviceData)) {
+              await sendUpdatedDeviceData();
+              previousDeviceData = latestDeviceData;
+            }
+          }, 500); // Thời gian để kiểm tra sự thay đổi
+        };
+        // Gọi hàm để bắt đầu theo dõi sự thay đổi trong deviceData
+        watchDeviceDataChanges();
       });
     });
   })

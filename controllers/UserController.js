@@ -7,14 +7,12 @@ const createUser = async (req, res) => {
       req.body;
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     const isCheckEmail = reg.test(email);
-    console.log("ischeckemail", isCheckEmail);
     if (!fullname || !username || !email || !password || !confirmPassword) {
       return res.status(200).json({
         status: "ERR",
         message: "The input is required",
       });
     } else if (!isCheckEmail) {
-      // xử lý status code để isSucces và isError không hiểu nhầm nữa
       return res.status(200).json({
         status: "ERR",
         message: "The input is email",
@@ -28,9 +26,6 @@ const createUser = async (req, res) => {
     const response = await UserService.createUser(req.body);
     return res.status(200).json(response);
   } catch (e) {
-    // return res.status(404).json({
-    //   message: e,
-    // });
     console.error("Error in createUser:", e);
     return res.status(500).json({
       status: "ERR",
@@ -58,9 +53,6 @@ const loginUser = async (req, res) => {
     });
     return res.status(200).json({ ...newReponse, refresh_token });
   } catch (e) {
-    // return res.status(404).json({
-    //   message: e,
-    // });
     console.error("Error in loginUser:", e);
     return res.status(500).json({
       status: "ERR",
@@ -194,8 +186,4 @@ module.exports = {
   getDetailsUser,
   refreshToken,
   logoutUser,
-  // admin
-  // deleteUser,
-  // getAllUser,
-  // deleteMany,
 };
