@@ -17,6 +17,7 @@ const app = express();
 
 const corsOptions = {
   origin: [
+    "http://localhost:3000",
     "https://smarthome-anhhungminhnghiakhoi.netlify.app",
     // Các origins khác mà bạn muốn cho phép truy cập
   ],
