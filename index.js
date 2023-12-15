@@ -25,8 +25,9 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://aquamarine-sorbet-ee8c87.netlify.app",
+      "https://chic-semifreddo-387257.netlify.app/",
     ],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Content-Disposition"],
