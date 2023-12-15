@@ -79,15 +79,13 @@ mongoose
         };
         socket.emit("deviceData", deviceData);
 
-        socket.on("controlData", async (data) => {
+        io.on("controlData", async (data) => {
           const lastDeviceData = await Device.findOne()
             .sort({ _id: -1 })
             .limit(1);
-          console.log("lastDevice:", lastDeviceData);
           let doorChanged = false;
           let fanChanged = false;
           let lampChanged = false;
-
           if (data.door !== (lastDeviceData.door === 1)) {
             lastDeviceData.door = data.door ? 1 : 0;
             doorChanged = true;
@@ -106,12 +104,10 @@ mongoose
             if (doorChanged) {
               mqttService.publishToTopic(topic3, updatedDeviceData.door);
               console.log("published control-door");
-            }
-            if (fanChanged) {
+            } else if (fanChanged) {
               mqttService.publishToTopic(topic4, updatedDeviceData.fan);
               console.log("published control-fan");
-            }
-            if (lampChanged) {
+            } else if (lampChanged) {
               mqttService.publishToTopic(topic5, updatedDeviceData.lamp);
               console.log("published control-lamp");
             }
