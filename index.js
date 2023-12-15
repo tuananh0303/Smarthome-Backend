@@ -20,7 +20,15 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 8080;
 const URI = process.env.mongo_URL;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://reliable-tiramisu-7475a3.netlify.app"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Disposition"],
+  })
+);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
