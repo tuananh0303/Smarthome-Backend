@@ -29,8 +29,8 @@ app.use(
     exposedHeaders: ["Content-Disposition"],
   })
 );
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
+app.use(express.json({ limit: "150mb" }));
+app.use(express.urlencoded({ limit: "150mb" }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
@@ -62,7 +62,7 @@ mongoose
         console.log("Client connected");
 
         const datasensor = await getDataFromSensorModel();
-        console.log("datasensor first 1:", datasensor);
+        // console.log("datasensor first 1:", datasensor);
         const formatData = {
           temperature: datasensor.temperature,
           humidity: datasensor.humidity,
@@ -101,7 +101,7 @@ mongoose
               await sendUpdatedSensorData();
               previousSensorData = latestSensorData;
             }
-          }, 35000); // Thời gian để kiểm tra sự thay đổi
+          }, 1000); // Thời gian để kiểm tra sự thay đổi
         };
         // Gọi hàm để bắt đầu theo dõi sự thay đổi trong sensorData
         watchSensorDataChanges();
@@ -119,7 +119,6 @@ mongoose
 
         // gọi dữ liệu đầu tiên của datadevice
         const datadevice = await getDataFromDeviceModel();
-        console.log("datadevice:", datadevice);
         const deviceData = {
           door: datadevice.door,
           fan: datadevice.fan,
@@ -150,18 +149,13 @@ mongoose
               await sendUpdatedDeviceData();
               previousDeviceData = latestDeviceData;
             }
-          }, 1000); // Thời gian để kiểm tra sự thay đổi
+          }, 500); // Thời gian để kiểm tra sự thay đổi
         };
         // Gọi hàm để bắt đầu theo dõi sự thay đổi trong deviceData
         watchDeviceDataChanges();
 
         socket.on("controlData", async (data) => {
           console.log("Received control data from client:", data);
-          // const transformedData = {
-          //   door: data.door ? 1 : 0,
-          //   fan: data.fan ? 1 : 0,
-          //   lamp: data.lamp ? 1 : 0,
-          // };
           const lastDeviceData = await Device.findOne()
             .sort({ _id: -1 })
             .limit(1);
