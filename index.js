@@ -79,7 +79,7 @@ mongoose
         };
         socket.emit("deviceData", deviceData);
 
-        io.on("controlData", async (data) => {
+        socket.on("controlData", async (data) => {
           const lastDeviceData = await Device.findOne()
             .sort({ _id: -1 })
             .limit(1);
