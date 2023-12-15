@@ -20,18 +20,7 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 8080;
 const URI = process.env.mongo_URL;
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://snazzy-praline-20341a.netlify.app",
-    ],
-    methods: ["GET", "POST"],
-    credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Content-Disposition"],
-  })
-);
+app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
 app.use(bodyParser.json());
