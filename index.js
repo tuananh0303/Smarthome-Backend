@@ -14,6 +14,19 @@ const Device = require("./models/DeviceModel");
 dotenv.config();
 
 const app = express();
+
+const corsOptions = {
+  origin: [
+    "https://smarthome-anhhungminhnghiakhoi.netlify.app",
+    // Các origins khác mà bạn muốn cho phép truy cập
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"], // Thêm các methods bạn muốn cho phép
+  credentials: true, // Nếu bạn sử dụng cookies hoặc authentication headers
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["Content-Disposition"],
+};
+
+app.use(cors(corsOptions));
 app.use(cors());
 const server = http.createServer(app);
 const io = socketIO(server);
