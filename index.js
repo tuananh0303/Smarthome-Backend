@@ -93,29 +93,12 @@ mongoose
         };
         // Hàm để theo dõi sự thay đổi trong sensorData
         const watchSensorDataChanges = async () => {
-          let previousSensorData = await getDataFromSensorModel();
-
           setInterval(async () => {
-            const latestSensorData = await getDataFromSensorModel();
-            if (!isEqual(previousSensorData, latestSensorData)) {
-              await sendUpdatedSensorData();
-              previousSensorData = latestSensorData;
-            }
-          }, 1000); // Thời gian để kiểm tra sự thay đổi
+            await sendUpdatedSensorData();
+          }, 30500); // Thời gian để kiểm tra sự thay đổi
         };
         // Gọi hàm để bắt đầu theo dõi sự thay đổi trong sensorData
         watchSensorDataChanges();
-
-        // setInterval(async () => {
-        //   const datasensorUpdate = await getDataFromSensorModel();
-        //   const updateFormatData = {
-        //     temperature: datasensorUpdate.temperature,
-        //     humidity: datasensorUpdate.humidity,
-        //     light: datasensorUpdate.light,
-        //   };
-
-        //   socket.emit("sensorData", updateFormatData);
-        // }, 35000);
 
         // gọi dữ liệu đầu tiên của datadevice
         const datadevice = await getDataFromDeviceModel();
@@ -155,7 +138,6 @@ mongoose
         watchDeviceDataChanges();
 
         socket.on("controlData", async (data) => {
-          console.log("Received control data from client:", data);
           const lastDeviceData = await Device.findOne()
             .sort({ _id: -1 })
             .limit(1);
