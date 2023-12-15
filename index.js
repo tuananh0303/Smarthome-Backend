@@ -28,7 +28,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(cors());
+// app.use(cors());
 const server = http.createServer(app);
 const io = socketIO(server);
 
