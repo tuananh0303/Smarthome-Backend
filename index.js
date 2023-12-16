@@ -26,6 +26,7 @@ app.use(
       "http://localhost:3000",
       "https://smarthome-iot-nhom13.netlify.app",
       "https://chic-semifreddo-387257.netlify.app",
+      "https://transcendent-banoffee-f698fe.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
