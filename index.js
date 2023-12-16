@@ -43,7 +43,7 @@ app.use(
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "token"],
     exposedHeaders: ["Content-Disposition"],
   })
 );
