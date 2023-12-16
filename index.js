@@ -24,8 +24,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://aquamarine-sorbet-ee8c87.netlify.app",
-      "https://chic-semifreddo-387257.netlify.app/",
+      "https://smarthome-iot-nhom13.netlify.app",
+      "https://chic-semifreddo-387257.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // cho phép sử dụng các header như Cookies, Authentication header...
@@ -40,8 +40,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 routes(app);
-// const topic = "khoitruong9802/feeds/get-humi";
-// const topic1 = "khoitruong9802/feeds/get-light";
 const topic = "khoitruong9802/feeds/get-temp-humi-light";
 const topic3 = "khoitruong9802/feeds/control-door";
 const topic4 = "khoitruong9802/feeds/control-fan";
@@ -175,9 +173,6 @@ mongoose
     console.log("err", err);
   });
 
-// server.listen(8080, () => {
-//   console.log("Server is running on port 8080");
-// });
 const getDataFromSensorModel = async () => {
   try {
     const sensorData = await Sensor.findOne().sort({ _id: -1 }).limit(1); // Lấy dữ liệu mới nhất
