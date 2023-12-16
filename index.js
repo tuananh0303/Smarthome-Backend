@@ -15,7 +15,20 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: [
+      "http://localhost:3000",
+      "https://smarthome-iot-nhom13.netlify.app",
+      "https://chic-semifreddo-387257.netlify.app",
+      "https://transcendent-banoffee-f698fe.netlify.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Disposition"],
+  },
+});
 
 const PORT = process.env.PORT || 8080;
 const URI = process.env.mongo_URL;
